@@ -1,0 +1,319 @@
+    \RequirePackage[l2tabu, orthodox, abort]{nag}
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage[english]{babel}
+\usepackage{mathtools, amsmath, amsfonts, amssymb}
+\usepackage{fancyhdr}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage[sc]{mathpazo}
+\usepackage[scaled]{beramono}
+\usepackage[scaled]{helvet}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[font={small,it}]{caption}
+\usepackage{fixltx2e}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{bm}
+\usepackage{xfrac}
+% \usepackage{fullpage}
+
+\linespread{1.05}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\widowpenalty=1000
+\clubpenalty=1000
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\mat}[1]{\textbf{#1}}
+
+\renewcommand{\thesection}{\uppercase\expandafter{\romannumeral 3}.\arabic{section}}
+
+% Todonotes commands.
+\newcommand{\addref}{\todo[color=red!40]{Add reference.}}
+\newcommand{\rewrite}[1]{\todo[color=green!40]{#1}} 
+\newcommand{\missing}[1]{\todo[inline,color=green!40]{Need to write: #1}}
+
+\title{ 
+\normalfont \normalsize 
+\textsc{University of Copenhagen} \\ [25pt]
+\horrule{0.5pt} \\[0.4cm]
+\huge StatML: Assigment 3\\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Jens Fredskov (chw752)\\Henrik Bendt (gwk553)\\Philip Munksgaard (jxk588)}
+
+\begin{document}
+\maketitle
+
+\section{Neural Networks}
+
+\subsection{Neural network implementations}
+
+We wish to compute the derivative $h'(a)$ of $h(a) = \frac{a}{1+|a|}$.
+
+First of all, we note that $|a| = \sqrt{a^2}$. We start by computing the derivative of $\sqrt{a^2}$ using the chain rule, since we'll need to use it later.
+
+\begin{align*}
+    (|a|)' =& (\sqrt{a^2})' \\
+    =& \frac{1}{2\sqrt{a^2}} 2a \\
+    =& \frac{2a}{2\sqrt{a^2}} \\
+    =& \frac{a}{\sqrt{a^2}}
+\end{align*}
+
+Now, let's use the quotient rule to compute the derivative $h'(a)$:
+
+\begin{align*}
+    \left( \frac{a}{1+|a|} \right) ' =& \frac{a'(1+|a|)-(1+|a|)'a}{(1+|a|)^2} \\
+    =& \frac{1 + |a| - \frac{a}{\sqrt{a^2}} a}{(1 + |a|)^2} \\
+    =& \frac{1 + |a| - \frac{a^2}{\sqrt{a^2}}}{(1 + |a|)^2} \\
+    =& \frac{1}{(1 + |a|)^2}
+\end{align*}
+
+Where, in the last step, we take advantage of the fact that $\frac{a^2}{\sqrt{a^2}} = \frac{|a|^2}{|a|}= |a|$.
+
+We note that $E = \frac{1}{N} \sum_{n=1}^N E_n$ where $E_n = \sum_{i=1}^K(y_i-t_i)^2$, but as we are only looking for the direction of the derivative when finding $\delta_i$ (and minimizing the error function $E$), we can set $E_n = \frac{1}{2}\sum_{i=1}^K(y_i-t_i)^2$ as it does not affect the minima or the direction to minima. So we can follow the slides and book on this part.
+
+Below, $\Delta \textit{inWeights}$ and $\Delta \textit{outWeights}$ are the weight vectors reported by our backpropagation implementation, while $\Delta \textit{numericInWeights}$ and \\ $\Delta \textit{numericOutWeights}$ are the weigths that we have numerically estimated.
+
+\begin{equation*}
+  \Delta \textit{inWeights} =
+  \begin{pmatrix}
+    0.0328 & 0.2029 \\
+    0.0328 & 0.2029 \\
+  \end{pmatrix},
+  \quad
+  \Delta \textit{outWeights} =
+  \begin{pmatrix}
+    1.3457 \\
+    1.4794 \\
+    1.4794 \\
+  \end{pmatrix}
+\end{equation*}
+
+\begin{equation*}
+  \Delta \textit{numericInWeights} =
+  \begin{pmatrix}
+    0.2357 \\
+    0.2357 \\
+  \end{pmatrix},
+  \quad
+  \Delta \textit{numericOutWeights} =
+  \begin{pmatrix}
+    1.3457 \\
+    1.4794 \\
+    1.4794 \\
+  \end{pmatrix}
+\end{equation*}
+
+We see that, by summing the rows in the numeric input weights, we get exactly the input weigths our back-propagation reported, and that the output weights are equal. Thus, our back-propagation algorithm yields the same results as our numerical estimate.
+
+The implementation is found in the files \texttt{main.m}, \texttt{meanSquaredError.m},  \texttt{backPropagation.m}, and \texttt{numericalDiffs.m}.
+
+\subsection{Neural network training}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/III12_1}
+    \caption{Logarithmic chart showing how the error changes as the neural network learns. Learning rate is 0.0001}
+    \label{fig:III12_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/III12_2}
+    \caption{Logarithmic chart showing how the error changes as the neural network learns. Learning rate is 0.1}
+    \label{fig:III12_2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/III12_3}
+    \caption{Logarithmic chart showing how the error changes as the neural network learns. Learning rate is 0.01}
+    \label{fig:III12_3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/III12_4}
+    \caption{Chart showin the result of plotting the different neural networks against $sinc(x)$.}
+    \label{fig:III12_4}
+\end{figure}
+
+The implementation is found in the files \texttt{main.m}, \texttt{meanSquaredError.m},  \texttt{backPropagation.m}, \texttt{steepestDescent.m} and \texttt{neuralNetwork.m}.
+
+\section{Support Vector Machines}
+\subsection{Data normalization}
+
+\begin{equation*}
+  \mu_{\textit{train}} =
+  \begin{pmatrix}
+    155.9604 \\
+    204.8212 \\
+    115.0586 \\
+      0.0060 \\
+      0.0000 \\
+      0.0032 \\
+      0.0033 \\
+      0.0096 \\
+      0.0277 \\
+      0.2624 \\
+      0.0147 \\
+      0.0166 \\
+      0.0220 \\
+      0.0440 \\
+      0.0226 \\
+     22.0007 \\
+      0.4948 \\
+      0.7157 \\
+     -5.7637 \\
+      0.2148 \\
+      2.3658 \\
+      0.1997
+  \end{pmatrix}, \quad
+  \sigma_{\textit{train}} = 10^3 \cdot
+  \begin{pmatrix}
+    1.9830 \\
+    9.7331 \\
+    2.1152 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0000 \\
+    0.0167 \\
+    0.0000 \\
+    0.0000 \\
+    0.0011 \\
+    0.0000 \\
+    0.0001 \\
+    0.0000
+  \end{pmatrix}
+\end{equation*}
+
+\begin{equation*}
+\mu_{\textit{normTest}} = \begin{pmatrix}
+   -0.0782 \\
+   -0.1572 \\
+    0.0553 \\
+    0.1126 \\
+    0.0712 \\
+    0.0865 \\
+    0.1151 \\
+    0.0866 \\
+    0.2477 \\
+    0.2439 \\
+    0.2284 \\
+    0.2496 \\
+    0.3150 \\
+    0.2284 \\
+    0.1483 \\
+   -0.0565 \\
+    0.0732 \\
+    0.0863 \\
+    0.1540 \\
+    0.3091 \\
+    0.0870 \\
+    0.1677 \\
+    \end{pmatrix} \\    
+\sigma_{\textit{normTest}} = \begin{pmatrix}
+    0.7323 \\
+    0.7150 \\
+    0.7977 \\
+    1.9906 \\
+    1.6662 \\
+    2.1370 \\
+    1.9225 \\
+    2.1379 \\
+    1.7721 \\
+    1.8292 \\
+    1.7175 \\
+    1.7780 \\
+    2.1905 \\
+    1.7176 \\
+    2.6633 \\
+    1.3610 \\
+    1.0827 \\
+    0.9514 \\
+    1.2166 \\
+    1.3629 \\
+    1.1336 \\
+    1.4149 \\
+\end{pmatrix}
+\end{equation*}
+
+The implementation is found in the files \texttt{main.m} and \texttt{fNorm.m}.
+
+\subsection{Model selection using grid-search}
+We used the Matlab version of LIBSVM as linked by the assignment text.
+
+We crossvalidated by splitting the data into 5 folds, with which we in turn used 4 sets as training data and the last set as validation data. We trained the SVM model on the training sets and summed the 0-1 loss error of the model used on the validation set. We did this iteratively on all the sets and reported averaged the errors. We did this for all combinations of $C$ and $\gamma$, which had values $\{10^n | n=[-3, -2,\ldots,2,3] \}$. We chose the hyperparameters of the minimum averaged error as seen in table \ref{tab:gridsearch}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c}
+                & Raw data & Normalized data \\ \hline
+    C           & 1        & 10 \\
+    $\gamma$    & 0.01     & 0.1 \\
+    Train error & 0.2142   & 0.1011 \\
+    Test error  & 0.1649   & 0.0928
+\end{tabular}
+\caption{The found hyperparameters along with the errors of the found models, based on raw data or normalized data}
+\label{tab:gridsearch}
+\end{table}
+
+Normalization gives a better result, which is expected as it potentially brings outliers and possible mixed data points closer to their respective groupings in the data, enabling a better linear division of the data points. This also results in fewer support vectors, as fewer data points are misclassified.
+
+The implementation is found in the files \texttt{main.m} and \texttt{crossValidation.m}.
+
+\subsection{Inspecting the kernel expansion}
+\subsubsection{Support vectors}
+The smaller $C$ we chose, the less we penalise slack and thus we experience more support vectors inside the margin or indeed misclassified support vectors (i.e. on the wrong side of the linear classification). These support vectors are bounded and thus we will get more of them the smaller $C$.
+The larger $C$ we chose, the greater is the slack penalty and the less support vectors are chosen inside the margin or is misclassified. Thus we get fewer bounded support vectors.
+
+This corresponds well to the observed behavior:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c|c}
+    $C$      & total SV & bounded SV & free SV \\ \hline
+    1      & 92       & 26         & 66      \\
+    0.001  & 58       & 46         & 12      \\
+    1000   & 87       & 0          & 87
+\end{tabular}
+\caption{The number of free and bounded support vectors in the trained SVMs with different $C$, and fixed $\gamma$}
+\label{tab:SV}
+\end{table}
+
+The implementation is found in the files \texttt{main.m}.
+
+\subsubsection{Scaling behaviour}
+With a non-zero Bayes risk the number of wrongly classified training data points increases linearly with the number of training data points, where each wrongly classified data point becomes a support vector. As Bayes risk indicates the percentage of wrongly classfied data points, the risk times the number of data points roughly determines the number of support vectors. This follows from Theorem 4.6~\cite{book:KBML} along with the section above the theorem.
+
+\begin{thebibliography}{9}
+
+\bibitem{book:KBML} C. Igel, \emph{Machine Learning: Kernel-based Methods}, lecture notes, v. 0.3.0
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,375 @@
+\RequirePackage[l2tabu, orthodox, abort]{nag}
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage[english]{babel}
+\usepackage{mathtools, amsmath, amsfonts, amssymb}
+\usepackage{fancyhdr}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage[sc]{mathpazo}
+\usepackage[scaled]{beramono}
+\usepackage[scaled]{helvet}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[font={small,it}]{caption}
+\usepackage{fixltx2e}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{bm}
+% \usepackage{fullpage}
+
+\linespread{1.05}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\widowpenalty=1000
+\clubpenalty=1000
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\mat}[1]{\textbf{#1}}
+
+% Todonotes commands.
+\newcommand{\addref}{\todo[color=red!40]{Add reference.}}
+\newcommand{\rewrite}[1]{\todo[color=green!40]{#1}}
+\newcommand{\missing}[1]{\todo[inline,color=green!40]{Need to write: #1}}
+
+\title{ 
+\normalfont \normalsize 
+\textsc{University of Copenhagen} \\ [25pt]
+\horrule{0.5pt} \\[0.4cm]
+\huge StatML: Assigment 1\\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Jens Fredskov (chw752)\\Henrik Bendt (gwk553)}
+
+\begin{document}
+\maketitle
+
+\pagebreak
+\section{Math Checklist}
+\label{sec:math_checklist}
+
+\subsection{Vectors and Matrices}
+\label{sub:vectors_and_matrices}
+
+\paragraph{Question 1}
+We calculate the inner product as
+\[
+    \vect a \cdot \vect b = \begin{pmatrix} 1 & 2 & 2 \end{pmatrix}
+                \begin{pmatrix} 3 \\ 2 \\ 1 \end{pmatrix}
+              = 1 \cdot 3 + 2 \cdot 2 + 2 \cdot 1
+              = 9
+\]
+
+\paragraph{Question 2}
+The norm corresponds to the square root of the inner product of a vector with itself, thus we calculate it as
+\[
+    ||\vect a|| = \sqrt{\vect a \cdot \vect a} = \sqrt{1^2 + 2^2 + 2^2} = 3
+\]
+
+\paragraph{Question 3}
+The outer product of the two vectors $a$ and $b$:
+\[
+    \vect a \vect b^T =  \begin{pmatrix} 1 \\ 2 \\ 2 \end{pmatrix}
+            \begin{pmatrix} 3 & 2 & 1 \end{pmatrix}
+         =  \begin{pmatrix} 
+                3 & 2 & 1\\
+                6 & 4 & 2\\
+                6 & 4 & 2
+            \end{pmatrix}
+\]
+
+\paragraph{Question 4}
+Because the matrix is a diagonal matrix we can simply take the reciprocal of every diagonal element and thus we get
+\[
+    \mat M^{-1} = 
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        0 & \frac{1}{4} & 0 \\
+        0 & 0 & \frac{1}{2}
+    \end{pmatrix}
+\]
+
+\paragraph{Question 5}
+We calculate the matrix-vector product as
+\[
+    \mat M \vect a =
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        0 & 4 & 0 \\
+        0 & 0 & 2
+    \end{pmatrix}
+    \begin{pmatrix}
+        1 \\ 2 \\ 2
+    \end{pmatrix} =
+    \begin{pmatrix}
+        1 \cdot 1 & 0 & 0 \\
+        0 & 4 \cdot 2 & 0 \\
+        0 & 0 & 2 \cdot 2
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        0 & 8 & 0 \\
+        0 & 0 & 4
+    \end{pmatrix}
+\]
+
+\paragraph{Question 6}
+We have that $\mat A = 
+                \begin{pmatrix} 
+                    3 & 2 & 1\\
+                    6 & 4 & 2\\
+                    6 & 4 & 2
+                \end{pmatrix}$, so the transposed is
+\[
+    \mat A^T = \begin{pmatrix} 
+                    3 & 6 & 6\\
+                    2 & 4 & 4\\
+                    1 & 2 & 2
+                \end{pmatrix}
+\]
+
+\paragraph{Question 7}
+The rank of $\mat A$ is 1. This is because $\mat A$ is the result of an outer product, so every $i$th column is $\vect a$ scaled with a factor of $\vect b_i$.
+
+\paragraph{Question 8}
+We cannot invert $\mat A$ because the rank is only 1, and to invert a matrix, the rank must be equal to $n=m$ where $n$ are the number of columns and $m$ the number of rows. As the matrix $\mat A$ is $3x3$ and rank is 1, this is not the case.
+
+\subsection{Derivatives}
+\label{sub:derivatives}
+
+\paragraph{Question 1}
+We expand the expression and then use the sum rule
+\[
+    \frac{\partial}{\partial w}f(w) = \frac{\partial}{\partial w} (wx+b)^2 = \frac{\partial}{\partial w} \left(x^2w^2+2xbw+b^2 \right) = 2x^2w+2xb
+\]
+
+\paragraph{Question 2}
+Using the reciprocal rule we get that (this is equivalent to using the chain rule, as it can be derived as a special case of the chain rule)
+\begin{align*}
+    {\partial \over \partial w} f(w)
+    &= {\partial \over \partial w} {1 \over (wx+b)^2}
+    = {-(2x^2 w + 2xb) \over ((wx+b)^2)^2} \\
+    &= {-2x (wx + b) \over (wx+b)^4}
+    = - {2x \over (wx + b)^3}
+\end{align*}
+
+\paragraph{Question 3}
+Using the product rule with $g_1(x) = x$ and $g_2(x) = e^x$ we get
+\[
+    {\partial \over \partial x} f(x)
+    = {\partial \over \partial x} x e^x
+    = x \cdot e^x + 1 \cdot e^x
+    = (x + 1) e^x
+\]
+
+\section{Probability and Parameter Estimation}
+\label{sec:probability_and_parameter_estimation}
+
+\subsection{Univariate Gaussian distributions}
+\label{sub:univariate_Gaussian_distributions}
+
+The plot for the three Gaussian distributions can be seen in Figure \ref{fig:I21}. The source code for the Gaussian distributions can be found in \texttt{main.m}, and \texttt{gauss.m}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/I21}
+    \caption{The three univariate Gaussian distributions.}
+    \label{fig:I21}
+\end{figure}
+
+\subsection{Sampling from a multivariate Gaussian distribution}
+\label{sub:sampling_from_a_multivariate_Gaussian_distributions}
+
+One run of the multivariate Gaussian can be seen in Figure \ref{fig:I22}. Notice that the multivariate Gaussian draws its points randomly from the distribution. However we initialize the random generator of Matlab with a seed, specifically \texttt{randomSeed = rng(43786953)}. This ensures that consecutive runs gives the same results. The source code for the multivariate distribution can be found in \texttt{main.m} and \texttt{resampleGauss.m}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/I22}
+    \caption{The plotted dataset.}
+    \label{fig:I22}
+\end{figure}
+
+\subsection{Means}
+\label{sub:means}
+
+The source code for calculation of the means can be found in \texttt{main.m}. The maximum likelihood mean of the multivariate gaussian sampled using the earlier given random seed is
+\[
+    \boldsymbol \mu_{ML} = (0.9945, 1.9921)
+\]
+
+A plot the data set with this and the mean from the underlying distribution plotted on top can be seen in Figure \ref{fig:I23}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/I23}
+    \caption{The plotted dataset, with the mean (blue) and the maximum likelihood mean (green) plotted on top.}
+    \label{fig:I23}
+\end{figure}
+
+To quantitatively describe the deviation between the means we can calculate the distance between the two points.
+\[
+    \mu_{Dist} = (0.0055, 0.0079)
+\]
+
+As can be seen we see a small difference between the underlying mean and the maximum likelihood mean. This is due to the fact that we only draw a random sample of points from the distribution. Thus as we draw more and more points we would see that $\mu_{ML}$ would get closer and closer to the underlying mean.
+
+\subsection{Covariance: The geometry of multivariate Gaussian distributions}
+\label{sub:covariance__the_geometry_of_multivariate_Gaussian_distributions}
+
+The source code for rotation of a matrix can be found in \texttt{rotateMatrix.m}. Using the described equation we calculate the maximum likelihood covariance matrix, with the given random seed to be
+\[
+    \boldsymbol \Sigma_{ML} = \begin{pmatrix}
+    0.2850 & 0.1827 \\
+    0.1827 & 0.2001
+    \end{pmatrix}
+\]
+
+The translated and scaled eigenvectors are $\vect e_1 = ( 1.1459, 1.8163 )^T$ and $\vect e_2 = (0.4865, 1.5921)^T$. A plot with these on top of the dataset can be seen in Figure \ref{fig:I24_1}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/I24_1}
+    \caption{The dataset with the translated and scaled eigenvectors plotted on top, with origin in the mean.}
+    \label{fig:I24_1}
+\end{figure}
+
+The eigenvectors describes the general axes (that is, directions) of the probability density for the Gaussian and the eigenvalues describes the length of these eigenvectors, that is, the width and length of the distribution, as a scaling factor.
+
+When resampling the distribution with a rotated covariance matrix we get the plot as seen in Figure \ref{fig:I24_2}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/I24_2}
+    \caption{The data set rotated 30, 60 and 90 degrees.}
+    \label{fig:I24_2}
+\end{figure}
+
+We got the angle value $\phi = 38.4628$ for rotating the data set to align with the x-axis. This is found by finding the angle between the eigenvector, describing the direction in the x-axis, and the x-axis.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/I24_3}
+    \caption{The combined plot of the original data set (red) and this data set rotated to align with the x-axis (blue).}
+    \label{fig:I24_3}
+\end{figure}
+
+\section{The Gaussian distribution and its conditional distributions} 
+\label{sec:the_Gaussian_distribution_and_its_conditional_distributions}
+First we marginalize $\vect x_c$ out. This is done as corresponding to the proof of 2.3.2.
+We rename the given vector $\mu$ to correspond to a 2 by 1 vector:
+\[ \boldsymbol \mu = (\boldsymbol \mu_a, \boldsymbol \mu_b, \boldsymbol \mu_c)^T = (\boldsymbol \mu_d, \boldsymbol \mu_c)^T \]
+where we note that this corresponds to the mean vector in the proof for marginalization in the book like this
+\[ (\boldsymbol \mu_d, \boldsymbol \mu_c)^T =  (\boldsymbol \mu_a, \boldsymbol \mu_b)^T \]
+
+We also rename the given covariance matrix $\boldsymbol \Sigma$ to correspond to a 2 by 2 matrix:
+\[ \boldsymbol \Sigma   =   \begin{pmatrix} 
+                    \boldsymbol \Sigma_{aa} & \boldsymbol \Sigma_{ab} & \boldsymbol \Sigma_{ac}\\
+                    \boldsymbol \Sigma_{ba} & \boldsymbol \Sigma_{bb} & \boldsymbol \Sigma_{bc}\\
+                    \boldsymbol \Sigma_{ca} & \boldsymbol \Sigma_{cb} & \boldsymbol \Sigma_{cc}
+                \end{pmatrix}
+            =   \begin{pmatrix} 
+                    \boldsymbol \Sigma_{dd} & \boldsymbol \Sigma_{dc} \\
+                    \boldsymbol \Sigma_{cd} & \boldsymbol \Sigma_{cc}
+                \end{pmatrix}
+\]
+where we note that this corresponds to the covariance matrix in the proof for marginalization in the book like this
+\[  \begin{pmatrix} 
+        \boldsymbol \Sigma_{dd} & \boldsymbol \Sigma_{dc} \\
+        \boldsymbol \Sigma_{cd} & \boldsymbol \Sigma_{cc}
+    \end{pmatrix}
+    =
+    \begin{pmatrix} 
+        \boldsymbol \Sigma_{aa} & \boldsymbol \Sigma_{ab} \\
+        \boldsymbol \Sigma_{ba} & \boldsymbol \Sigma_{bb}
+    \end{pmatrix}
+\]
+From the proof, it follows, that after marginalizing $\vect x_c$ out, that is
+\[ p(\vect x_d) = \int p(\vect x_d, \vect x_c) \mathrm{d}\vect x_c \]
+we have from 2.92 that
+\[ \mathbb{E}[\vect x_d] = \boldsymbol \mu_d = (\boldsymbol \mu_a, \boldsymbol \mu_b)^T\]
+and from 2.93 that
+\[ cov[\vect x_d] = \boldsymbol \Sigma_{dd} =   
+    \begin{pmatrix} 
+        \boldsymbol \Sigma_{aa} & \boldsymbol \Sigma_{ab} \\
+        \boldsymbol \Sigma_{ba} & \boldsymbol \Sigma_{bb}
+    \end{pmatrix}
+\]
+
+We now need to find the conditional distribution $p(\vect x_a \; | \; \vect x_b)$ from the above results.
+From the proof of 2.3.1 on conditional Gaussian distributions, and also summarized at 2.96 and 2.97, it follows directly, that
+\[p(\vect x_a \; | \; \vect x_b) = \mathcal{N}(\vect x|\boldsymbol \mu_{a|b}, \boldsymbol \Lambda_{aa}^{-1})\]
+where
+\[ \boldsymbol \mu_{a|b} = \boldsymbol \mu_a - \boldsymbol \Lambda_{aa}^{-1}\boldsymbol \Lambda_{ab}(\vect x_b-\boldsymbol \mu_b) \]
+and from 2.76 and 2.77 we have that
+\[ \boldsymbol \Lambda_{aa} = (\boldsymbol \Sigma_{aa}-\boldsymbol \Sigma_{ab}\boldsymbol \Sigma_{bb}^{-1}\boldsymbol \Sigma_{ba})^{-1}\]
+
+
+\section{Classification}
+\label{sec:classification}
+
+\subsection{Nearest neighbour}
+\label{sub:nearest_neighbour}
+Results are presented in the following tables.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c|c}
+        \multicolumn{2}{c}{Training dataset} \\ \toprule
+        k & accuracy \\ \hline
+        1 & 1.00 \\
+        3 & 0.86 \\
+        5 & 0.83
+    \end{tabular}
+    \quad
+    \begin{tabular}{c|c}
+        \multicolumn{2}{c}{Test dataset} \\ \toprule
+        k & accuracy \\ \hline
+        1 & 0.82 \\
+        3 & 0.82 \\
+        5 & 0.68
+    \end{tabular}
+    \caption{The accuracy for different $k$, for the training and test data set.}
+    \label{tab:accuracy}
+\end{table}
+
+As expected, we see zero error on the accuracy of $k=1$ on the training data, because this is a exact fit on the data points. And we also see that this is not the case, when applying the test data. It is notable that we get the same accuracy for $k=1$ and $k=3$ for the test data, but this is because of the limited set of data points. From the results, it is obvious that the algorithm does not work as well for $k=5$ for neither the training nor (especially) the test data. But again, this might be because of the limited data points to model from, but it could also just be that $k=5$ is a bad $k$ for this problem.
+
+The source code for the algorithm kNN can be found in \texttt{kNN.m} and the rest can be found in \texttt{main.m}.
+
+\subsection{Hyperparameter selection using cross-validation}
+\label{sub:hyperparameter_selection_using_cross_validation}
+The 5 folds where made by first sorting the training data on the classifier property, and then running through the list of points, assigning each row to alternating folds, so each fold would end up with the same number of data points for each classifier (or be off by maximum 1 data point). Thus we did a stratified cross-validation. An alternative to this would have been a repeated cross-validations, but this is computationally heavy.
+
+For each fold, we made a run for each $k$ in the given range, and summed the 0-1 loss results over all folds for each $k$. In the end we found the minimum sum and reported the error (described as the 0-1 sum divided by the number of folds) and $k$ for this sum. We then used this $k$ on the test data.
+
+The result was $k_{best}=7$ with the training error $0.2200$ and the test error $0.3947$. 
+
+The source code for the cross-validation algorithm can be found in \texttt{cross\-Validation.m} and the rest can be found in \texttt{main.m}.
+
+\subsection{Data normalization}
+\label{sub:data_normalization}
+
+We got the following results:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{r|c|c}
+        & Mean & Variance \\
+        Training        & (5.7560, 0.3017) & (0.6958, 0.0018)  \\
+        Normalised Test & (0.2073, 0.4300) & (1.0114, 1.2732) 
+    \end{tabular}
+    \caption{Mean and variance of training and normalised test data.}
+    \label{tab:normdata}
+\end{table}
+
+We get $k_{best} = 1$ and a training 1-0 error of $0.1200$ and a test 1-0 error of $0.2105$.
+This is obviously better than when we used raw data, as we got a larger error on both training and test, which was $0.2200$ and $0.3947$ respectively. This is because normalisation moves data points into the same proportions as one another, making it clearer to which extends two data points share some features (because we minimise the variance between the points) and it might also bring outliers closer to the data points, making classification of these more meaningful.
+
+The source code for the algorithm f\_norm can be found in \texttt{fNorm.m} and the rest can be found in \texttt{main.m}.
+\end{document}

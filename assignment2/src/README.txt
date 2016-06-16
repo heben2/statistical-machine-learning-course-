@@ -1,0 +1,11 @@
+To run the source code:
+    - Install Matlab 2013a (other versions of Matlab may also work, but no gurantees are given).
+    - Start Matlab and run the file main.m
+    - In the same directory as main.m should be the included m-files containing functions used. These are:
+        - betterPlots.m
+        - fNorm.m
+        - getClass.m
+        - lda.m
+        - linearRegression.m
+        - maxPosterior.m
+    - NB: in the directory containing the 'src' directory must be a 'figures' directory

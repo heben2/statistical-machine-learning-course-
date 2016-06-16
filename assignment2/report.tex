@@ -1,0 +1,201 @@
+\RequirePackage[l2tabu, orthodox, abort]{nag}
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{ucs}
+\usepackage[english]{babel}
+\usepackage{mathtools, amsmath, amsfonts, amssymb}
+\usepackage{fancyhdr}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage[sc]{mathpazo}
+\usepackage[scaled]{beramono}
+\usepackage[scaled]{helvet}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[font={small,it}]{caption}
+\usepackage{fixltx2e}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{bm}
+\usepackage{xfrac}
+% \usepackage{fullpage}
+
+\linespread{1.05}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\widowpenalty=1000
+\clubpenalty=1000
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\mat}[1]{\textbf{#1}}
+
+\renewcommand{\thesection}{\uppercase\expandafter{\romannumeral 2}.\arabic{section}}
+
+% Todonotes commands.
+\newcommand{\addref}{\todo[color=red!40]{Add reference.}}
+\newcommand{\rewrite}[1]{\todo[color=green!40]{#1}} 
+\newcommand{\missing}[1]{\todo[inline,color=green!40]{Need to write: #1}}
+
+\title{ 
+\normalfont \normalsize 
+\textsc{University of Copenhagen} \\ [25pt]
+\horrule{0.5pt} \\[0.4cm]
+\huge StatML: Assigment 2\\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Jens Fredskov (chw752)\\Henrik Bendt (gwk553)}
+
+\begin{document}
+\maketitle
+
+\pagebreak
+\section{Classification}
+\subsection{Linear discriminant analysis}
+The deltas of the LDA are only calculated once for the training set, which gives the very fast running time (constant asymptotic running time) when applying data and finding the delta-class which is maximum.
+
+We get a training accuracy of $0.86$ and a test accuracy of $0.79$.
+
+The implementations of LDA is found in the files \texttt{main.m}, \texttt{lda.m} and \texttt{getClass.m}, the later works as a sub-function for \texttt{lda.m}.
+
+\subsection{LDA and normalisation}
+After normalisation of the data we still get a training accuracy of $0.86$ and a test accuracy of $0.79$. The results remain unchanged. This is because the LDA does a linear separation of the data points, which only depends on the structure of the data points and this is not changed when normalising.
+
+The implementation is found in the files \texttt{main.m}, \texttt{fNorm.m} and \texttt{lda.m}.
+
+\subsection{Bayes optimal classification and probabilistic classification}
+Using the given data we have the hypothesis class $\mathcal{H} = \{ h_0(x) = 0, h_1(x) = 1 \}$ (as we only have one element in the input space and two in the output space). Thus the Bayes optimal classifier is the hypothesis $h_1(x)$, as the Bayes optimal risk, which is the minimal risk over all hypotheses is $\mathcal{R}^{\text{Bayes}}_{\mathcal{S}} = \min(\{ 1 - \sfrac{1}{4}, 1 - \sfrac{3}{4}\} = \sfrac{1}{4}$ which corresponds to the risk of hypothesis $h_1$.
+
+The risk of this classifier is the sum of the risks for each class of the classifier, that is, the joint probability of $p(y=0,h(x)=1)$ and $p(y=1,h(x)=0)$.
+
+\begin{align*}
+p(y=0,h(x)=1) &= p(y=0 \;|\; h(x)=1)p(h(x)=1) = 0.25 \cdot 0.75 = 0.1875 \\
+p(y=1,h(x)=0) &= p(y=1 \;|\; h(x)=0)p(h(x)=0) = 0.75 \cdot 0.25 = 0.1875 \\
+\mathcal{R}_p (h) &= 0.1875 + 0.1875 = 0.375
+\end{align*}
+
+which is worse than using the Bayes optimal classifier.
+
+\section{Regression: Sunspot Prediction}
+\subsection{Maximum likelihood solution}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II21_1}
+    \caption{The plot is based on selection 2 (which only looks at column 5). The linear regression line of model 2 also contains the projected points of the test set, that is, the target variables computed by model 2 on the test set.}
+    \label{fig:II21_1}
+\end{figure}
+
+When applying each model to the test set with the ML parameter we get the following RMS values
+\begin{align*}
+    RMS_1 = 35.4651\\
+    RMS_2 = 28.8398\\
+    RMS_3 = 18.7700
+\end{align*}
+showing that model 3 is by far the optimal solution (for these test data at least).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II21_2}
+    \caption{Plot of years vs predicted sunspot numbers for each model on the test set, along with the actual sun spot numbers.}
+    \label{fig:II21_2}
+\end{figure}
+From Figure \ref{fig:II21_2} we see that model 3 seem closer to the actual target compared to the other models.
+
+The implementation is found in the files \texttt{main.m} and \texttt{linearRegression.m}.
+
+\subsection{Maximum a posteriori solution}
+Note that we could find the optimal value for $\alpha$ by following the iterative procedure described in 3.5.2 in the book, by which we choose an initial $\alpha$ and continues to re-estimate this $\alpha$ until it converges to the true $\alpha$ for the training data. This was however not required for this assignment.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II22_1}
+    \caption{The RMS plotted against the value of $\alpha$ for model 1. The plot is used to determine the scale of $\alpha$.}
+    \label{fig:II22_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II22_2}
+    \caption{The RMS plotted against the value of $\alpha$ for model 2. The plot is used to determine the scale of $\alpha$.}
+    \label{fig:II22_2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II22_3}
+    \caption{The RMS plotted against the value of $\alpha$ for model 3. The plot is used to determine the scale of $\alpha$.}
+    \label{fig:II22_3}
+\end{figure}
+
+Based on the above plots, we find the scales of importance for each model, that is, the scales where the line goes under $RMS_{ML}$ and possibly gives a minima. We also see that model 1 and 2 does not seem to go below the RMS error of ML, that is, for $\alpha > 0$ no better solution exists for model 1 and 2 than the ML solution.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II22_4}
+    \caption{The RMS plotted against the value of $\alpha$ for model 1. The dotted line indicates the value of the maximum likelihood RMS.}
+    \label{fig:II22_4}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II22_5}
+    \caption{The RMS plotted against the value of $\alpha$ for model 2. The dotted line indicates the value of the maximum likelihood RMS.}
+    \label{fig:II22_5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/II22_6}
+    \caption{The RMS plotted against the value of $\alpha$ for model 3. The dotted line indicates the value of the maximum likelihood RMS.}
+    \label{fig:II22_6}
+\end{figure}
+
+We see that for model 1 and 2, the $RMS$ error do not seem to ever go below $RMS_{ML}$ for any value of $\alpha$.
+
+We see that for model 3, the $RMS$ error goes below for $0 < \alpha < 10^4$ and we have a minima around $\alpha = 50$ where the $RMS$ error is around $18.62$, which $0.15$ better than the $RMS_{ML} = 18.77$.
+
+The implementation is found in the files \texttt{main.m} and \texttt{maxPosterior.m}.
+
+\subsection{Weighted sum-of-squares}
+To determine $\vect{w}^*$ we determine the gradiant for $E_D(\vect{w})$ and set it to zero. Thus we do as follows
+\begin{align*}
+    \nabla E_D(\vect{w})
+    &= \nabla \frac{1}{2} \sum_{n=1}^{N} r_n \lbrace t_n - \vect{w}^T \bm\phi(\vect{x}_n \rbrace \\
+    &= \sum_{n=1}^{N} r_n \lbrace t_n - \vect{w}^T \bm\phi(\vect{x}_n) \rbrace \bm\phi(\vect{x}_n)^T \\
+    0
+    &= \sum_{n=1}^{N} r_n t_n \bm\phi(\vect{x_n})^T - \vect{w}^T \left( \sum_{n=1}^{N} r_n \bm\phi(\vect{x}_n) \bm\phi(\vect{x}_n)^T \right) \\
+\end{align*}
+
+We define the vector
+\[
+\vect{u} = (r_1t_1 \ldots r_nt_n)^T
+\]
+and the diagonal matrix
+\[
+\mat{I}_r = \begin{pmatrix}
+    r_1 & & & \\
+    & r_2 & & \\
+    & & \ddots & \\
+    & & & r_n \\
+\end{pmatrix}
+\]
+Computing the sums to matrices and vectors, we get
+\begin{align*}
+    0 &= \vect{u}^T \bm\Phi - \vect{w}^T (\mat{I}_r \bm\Phi \bm\Phi^T) \\
+    &\Leftrightarrow (\vect{w}^T (\mat{I}_r \bm\Phi \bm\Phi^T))^T = (\vect{u}^T \bm\Phi)^T \\
+    &\Leftrightarrow (\mat{I}_r^T \bm\Phi^T \bm\Phi) \vect{w} = \bm\Phi^T \vect{u} \\
+    &\Leftrightarrow \vect{w} = (\mat{I}_r^T \bm\Phi^T \bm\Phi)^{-1} \bm\Phi^T \vect{u}
+\end{align*}
+
+To interpret the weights in terms of data dependent noise variance we could select the $r$s such that they are small for noisy observations, making these observations count less in the error. In the same way we can interpret the weight in terms of replicated data points by assigning smaller values to points which are the same, making it such that if we for example have three of the same point, they all have a weight of $\sfrac{1}{3}$. This means they in all sum to a weight of one and thus replicated points does not count more than once in the error.
+\end{document}
